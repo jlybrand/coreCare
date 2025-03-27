@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+const app = require('../src/app');
+const http = require('http');
+const config = require('../config');
+
+const port = config.port;
+app.set('port', port);
+
+const server = http.createServer(app);
+
+server.listen(port);
+server.on('listening', () => {
+  const address = server.address();
+  const url = `http://localhost:${address.port}`;
+  
+  console.log(`Server running in ${config.nodeEnv} mode`);
+  console.log(`Server started at: \x1b[36m%s\x1b[0m`, `${url}`);
+});
+
+server.on('error', (error) => {
+  console.error('Server error:', error);
+});

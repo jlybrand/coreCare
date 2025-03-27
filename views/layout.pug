@@ -1,0 +1,33 @@
+doctype html
+html
+  head    
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= title
+  body
+    nav
+      ul(class="nav-list")
+        li
+          a(href='/') Home
+        li
+          a(href='/search') Search
+        if user
+          li
+            a(href='/users/dashboard') Dashboard
+          li
+            a(href='/users/signout') Sign Out
+        else
+          li
+            a(href='/users/signin') Sign In
+          li
+            a(href='/users/register') Register
+    main
+      if errorMessages && errorMessages.length > 0
+        .error-messages
+          each error in errorMessages
+            p.error-message= error
+      
+      if successMessage
+        .success-message
+          p= successMessage
+      
+      block content
