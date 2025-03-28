@@ -16,7 +16,7 @@ const searchRouter = require('./routes/search');
 
 // Register routes
 app.get('/', (req, res) => {
-  res.render('home', { title: 'Care Connect' });
+  res.render('search', { title: 'Care Connect' });
 });
 
 // Mount the routes
