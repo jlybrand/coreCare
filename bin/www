@@ -3,6 +3,7 @@
 const app = require('../src/app');
 const http = require('http');
 const config = require('../config');
+const { setupDatabase } = require('../src/db/setup');
 
 const port = config.port;
 app.set('port', port);
@@ -10,12 +11,18 @@ app.set('port', port);
 const server = http.createServer(app);
 
 server.listen(port);
-server.on('listening', () => {
+server.on('listening', async () => {
   const address = server.address();
   const url = `http://localhost:${address.port}`;
   
   console.log(`Server running in ${config.nodeEnv} mode`);
   console.log(`Server started at: \x1b[36m%s\x1b[0m`, `${url}`);
+
+  try {
+    await setupDatabase();
+  } catch (error) {
+    console.error('Database setup error:', error);
+  }
 });
 
 server.on('error', (error) => {
