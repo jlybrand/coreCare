@@ -1,0 +1,96 @@
+extends layout
+
+block content
+  section.container
+    section.left-column
+    section.center-column
+      h1.search-heading= title
+      p.search-subheading Find businesses near you to build your referral network
+
+      form.search-form(action="/search", method="POST")
+        .form-group
+          label(class="sr-only" for="address") Street Address:
+          input(type="text", id="address", name="address", placeholder="Street Address" value=address)
+        
+        .form-group
+          label(class="sr-only" for="zipcode") ZIP Code:
+          input(type="text", id="zipcode", name="zipcode", placeholder="Zip Code" value=zipcode)
+        
+        .form-group.radius-container
+        label(for="radius") Search Radius
+        input(type="range", id="radius", name="radius", value=radius min="1", max="75", step="10")
+        .radius-value
+          span#radius-display #{radius}
+          span  miles
+
+        .form-group
+          label(class="sr-only" for="sicCode") Business Type:
+          select(id="sicCode", name="sicCode")
+            option(value="", selected=!sicCode) -- Select Business Type --
+            option(value="802101", selected=sicCode==="802101") Dentists
+            option(value="801101", selected=sicCode==="801101") Doctors
+            option(value="599504", selected=sicCode==="599504") Opticians
+            option(value="591205", selected=sicCode==="591205") Pharmacies
+        
+        button.submit-bttn(type="submit") Search
+    section.right-column
+
+  //- Modal
+  if showModal
+    .modal-overlay
+      .modal(class=`modal-${modalType}`)
+        .modal-header
+          h3.modal-title
+            if modalType === 'success'
+              | Search Success
+            else if modalType === 'warning'
+              | Not Enough Results
+            else
+              | Search Error
+          button.modal-close &times;
+        
+        .modal-body
+          p= modalMessage
+        
+        .modal-footer
+          if modalType === 'success' && isEligible
+            a.modal-button.primary-button(href="/users/register") Claim Your Referrals Now
+          else if modalType === 'warning'
+            button.modal-button.secondary-button#increaseRadius Increase Radius
+
+  script.
+    // Modal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.querySelector('.modal');
+      const modalOverlay = document.querySelector('.modal-overlay');
+      
+      if (modal) {
+        // Close modal when clicking the X button
+        const closeButton = modal.querySelector('.modal-close');
+        if (closeButton) {
+          closeButton.addEventListener('click', function() {
+            modalOverlay.style.display = 'none';
+          });
+        }
+        
+        // Close modal when clicking the Close button
+        const closeModalButton = modal.querySelector('.close-button');
+        if (closeModalButton) {
+          closeModalButton.addEventListener('click', function() {
+            modalOverlay.style.display = 'none';
+          });
+        }
+        
+        // Handle "Increase Radius" button
+        const increaseRadiusButton = document.getElementById('increaseRadius');
+        if (increaseRadiusButton) {
+          increaseRadiusButton.addEventListener('click', function() {
+            const radiusInput = document.getElementById('radius');
+            const currentRadius = parseInt(radiusInput.value);
+            const newRadius = Math.min(currentRadius + 10, 50); // Increase by 10, max 50
+            radiusInput.value = newRadius;
+            modalOverlay.style.display = 'none';
+          });
+        }
+      }
+    });

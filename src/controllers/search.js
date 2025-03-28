@@ -10,7 +10,7 @@ const renderSearchForm = (req, res) => {
   });
 };
 
-const handleSearchSubmit = async (req, res, next) => {
+const handleSearchSubmit = async (req, res) => {
   const { address, zipcode, radius, sicCode } = req.body;
   
   try {
@@ -21,10 +21,59 @@ const handleSearchSubmit = async (req, res, next) => {
       sicCode
     });
     
+    const businessType = searchResult.businessType || 'businesses';
+    
+    if (!searchResult.success) {
+      return res.render('search', {
+        title: 'Search',
+        errorMessages: [searchResult.error],
+        address,
+        zipcode,
+        radius,
+        sicCode,
+        showModal: true,
+        modalType: 'error',
+        modalMessage: searchResult.error
+      });
+    }
+    
+    const resultCount = searchResult.count || 0;
+    
+    if (resultCount > 19) {
+      return res.render('search', {
+        title: 'Search',
+        address,
+        zipcode,
+        radius,
+        sicCode,
+        showModal: true,
+        modalType: 'success',
+        modalMessage: `There are ${resultCount} ${businessType} in your search radius.`,
+        isEligible: true
+      });
+    } else {
+      return res.render('search', {
+        title: 'Search',
+        address,
+        zipcode,
+        radius,
+        sicCode,
+        showModal: true,
+        modalType: 'warning',
+        modalMessage: 'Increase your search radius to find referral partners.',
+        isEligible: false
+      });
+    }
   } catch (error) {
     console.error('Search controller error:', error);
-    
-    next(error);
+    return res.render('search', {
+      title: 'Search',
+      errorMessages: ['An unexpected error occurred. Please try again.'],
+      address,
+      zipcode,
+      radius,
+      sicCode
+    });
   }
 };
 
