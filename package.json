@@ -5,16 +5,18 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "db:setup": "node ./src/db/setup.js"
   },
   "dependencies": {
     "axios": "^1.8.4",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "pg": "^8.14.1",
     "pug": "^3.0.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.22"
   },
   "author": "jal",
   "license": "ISC"
