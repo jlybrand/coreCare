@@ -1,9 +1,13 @@
 const db = require('../index');
 
+/**
+ * Initialize database tables
+ */
 const initTables = async () => {
   try {
     console.log('Initializing database tables...');
     
+    // Create prospects table
     await db.query(`
       CREATE TABLE IF NOT EXISTS prospects (
         id SERIAL PRIMARY KEY,
@@ -17,19 +21,20 @@ const initTables = async () => {
       )
     `);
     
+    // Create clients table without username
     await db.query(`
       CREATE TABLE IF NOT EXISTS clients (
         id SERIAL PRIMARY KEY,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         date_created DATE DEFAULT CURRENT_DATE,
         isAdmin BOOLEAN NOT NULL DEFAULT FALSE
       )
     `);
     
+    // Create targets table with owner_email
     await db.query(`
       CREATE TABLE IF NOT EXISTS targets (
         id SERIAL PRIMARY KEY,
@@ -39,7 +44,7 @@ const initTables = async () => {
         state TEXT NOT NULL,
         postal_code TEXT NOT NULL,
         phone TEXT,
-        owner TEXT NOT NULL REFERENCES clients (username) ON DELETE CASCADE
+        owner_email TEXT NOT NULL REFERENCES clients (email) ON DELETE CASCADE
       )
     `);
     
