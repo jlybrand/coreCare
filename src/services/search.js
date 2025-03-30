@@ -21,12 +21,14 @@ const findProspect = (origin, results) => {
     return [];
   }
 
+  const addresses = Array.isArray(claimedAddresses) ? claimedAddresses : [];
+
   return results.filter((result) => {
     if (prospect && result.address === prospect.address) {
       return false;
     }
 
-    if (claimedAddresses.includes(result.address)) {
+    if (addresses.includes(result.address)) {
       return false;
     }
 

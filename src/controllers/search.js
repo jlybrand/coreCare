@@ -50,6 +50,17 @@ const handleSearchSubmit = async (req, res) => {
 
     const resultCount = searchResult.count || 0;
 
+    // Store search data in session for registration flow
+    req.session.searchData = {
+      eligibleResults: searchResult.eligibleResults,
+      eligibilityMsg: `Found ${resultCount} ${businessType} within ${radius} miles.`,
+      claimMsg: 'Register to claim these referrals',
+      businessType: businessType,
+      radius: radius
+    };
+    
+    console.log(`Stored ${searchResult.eligibleResults?.length || 0} eligible results in session`);
+
     if (resultCount > 19) {
       return res.render("search", {
         title: "Search",

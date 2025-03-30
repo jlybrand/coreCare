@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  section.container
+    section.left-column
+    section.center-column
+      h1.page-title= title
+      
+      if eligibilityMsg
+        .message.success-message= eligibilityMsg
+      
+      if claimMsg
+        .message.claim-message= claimMsg
+      
+      if errorMessages && errorMessages.length > 0
+        .error-messages
+          each error in errorMessages
+            p.error-message= error
+
+      form.register-form(action="/users/register", method="POST")
+        .form-group
+          label(for="firstname") First Name
+          input(type="text", id="firstname", name="firstname", value=firstname)
+        
+        .form-group
+          label(for="lastname") Last Name
+          input(type="text", id="lastname", name="lastname", value=lastname)
+        
+        .form-group
+          label(for="email") Email
+          input(type="email", id="email", name="email", value=email)
+        
+        .form-group
+          label(for="password") Password
+          input(type="password", id="password", name="password")
+        
+        button.submit-bttn(type="submit") Register
+    section.right-column

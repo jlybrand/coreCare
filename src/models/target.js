@@ -1,25 +1,20 @@
 const db = require('../db');
 
 /**
- * Save multiple targets for a client
+ * Save multiple targets for a user
  * 
- * @param {string} username - The username of the client
+ * @param {string} email - The email of the owner
  * @param {Array} targets - Array of target objects
- * @returns {boolean} - True if targets were saved successfully
+ * @returns {boolean} - Success indicator
  */
-const saveMany = async (username, targets) => {
+const saveMany = async (email, targets) => {
   try {
-    if (!targets || !Array.isArray(targets) || targets.length === 0) {
-      return false;
-    }
-    
-    // For better performance, we could use a bulk insert here
     let lastResult;
     
     for (const target of targets) {
       const query = `
         INSERT INTO targets 
-          (name, address, city, state, postal_code, phone, owner) 
+          (name, address, city, state, postal_code, phone, owner_email) 
         VALUES 
           ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
@@ -32,13 +27,12 @@ const saveMany = async (username, targets) => {
         target.state,
         target.postal_code,
         target.phone,
-        username
+        email
       ];
       
       lastResult = await db.query(query, ...values);
     }
     
-    // Return true if at least one target was saved
     return lastResult && lastResult.rowCount > 0;
   } catch (error) {
     console.error('Error saving targets:', error);
@@ -50,29 +44,32 @@ const saveMany = async (username, targets) => {
  * Get all stored target addresses
  * Used for filtering out existing targets in search results
  * 
- * @returns {Array} - Array of target addresses
+ * @returns {Array} - Array of target addresses or []
  */
 const getAllAddresses = async () => {
   try {
     const query = 'SELECT address FROM targets';
     const result = await db.query(query);
-    return result.rows.map(row => row.address);
+    
+    return result.rows ? result.rows.map(row => row.address) : [];
   } catch (error) {
-    console.error('Error getting all target addresses:', error);
-    throw error;
+    console.error('Error getting target addresses:', error);
+    // Return empty array on error instead of throwing
+    return [];
   }
 };
 
+
 /**
- * Get targets owned by a specific client
+ * Get targets claimed by a client
  * 
- * @param {string} username - The username of the client
- * @returns {Array} - Array of target objects
+ * @param {string} email - The user's email
+ * @returns {Array} - Array of targets
  */
-const findByOwner = async (username) => {
+const findByOwner = async (email) => {
   try {
-    const query = 'SELECT * FROM targets WHERE owner = $1';
-    const result = await db.query(query, username);
+    const query = 'SELECT * FROM targets WHERE owner_email = $1';
+    const result = await db.query(query, email);
     return result.rows;
   } catch (error) {
     console.error('Error finding targets by owner:', error);
@@ -107,7 +104,7 @@ const findAll = async () => {
     const query = `
       SELECT t.*, c.first_name, c.last_name, c.email 
       FROM targets t
-      JOIN clients c ON t.owner = c.username
+      JOIN clients c ON t.owner = c.email
       ORDER BY t.id DESC
     `;
     const result = await db.query(query);
