@@ -59,18 +59,20 @@ const getAllAddresses = async () => {
   }
 };
 
-
-/**
- * Get targets claimed by a client
- * 
- * @param {string} email - The user's email
- * @returns {Array} - Array of targets
- */
-const findByOwner = async (email) => {
-  try {
-    const query = 'SELECT * FROM targets WHERE owner_email = $1';
-    const result = await db.query(query, email);
-    return result.rows;
+const findTargetsByEmail = async (owner_email) => {
+  console.log('findTargetsByEmailCalled');
+  try { 
+    const targets = await db.query(
+      'SELECT * FROM targets WHERE LOWER(owner_email) = LOWER($1) ORDER BY name ASC',
+      owner_email
+    );
+    
+    console.log(`findTargetsByEmail Query returned ${targets.rows.length} targets`);
+    
+    return {
+      success: true,
+      targets: targets.rows
+    };
   } catch (error) {
     console.error('Error finding targets by owner:', error);
     throw error;
@@ -90,7 +92,10 @@ const isAddressClaimed = async (address) => {
     return result.rowCount > 0;
   } catch (error) {
     console.error('Error checking if address is claimed:', error);
-    throw error;
+    return {
+      success: false,
+      error: 'Failed to retrieve targets'
+    };
   }
 };
 
@@ -104,7 +109,7 @@ const findAll = async () => {
     const query = `
       SELECT t.*, c.first_name, c.last_name, c.email 
       FROM targets t
-      JOIN clients c ON t.owner = c.email
+      JOIN clients c ON t.owner_email = c.email
       ORDER BY t.id DESC
     `;
     const result = await db.query(query);
@@ -118,7 +123,7 @@ const findAll = async () => {
 module.exports = {
   saveMany,
   getAllAddresses,
-  findByOwner,
+  findTargetsByEmail,
   isAddressClaimed,
   findAll
 };

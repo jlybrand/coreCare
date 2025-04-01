@@ -1,4 +1,5 @@
 const userService = require('../services/user');
+const clientModel = require('../models/client')
 
 const renderRegistrationForm = (req, res) => {
   // Get search data from session if available
@@ -12,21 +13,11 @@ const renderRegistrationForm = (req, res) => {
 };
 
 const handleRegistration = async (req, res, next) => {
-  const { firstname, lastname, email, password } = req.body;
-
-  // Debug session data
-  console.log('Session data:', JSON.stringify(req.session));
-  console.log('Search data in session:', JSON.stringify(req.session.searchData));
-  console.log('Eligible results count:', 
-    req.session.searchData?.eligibleResults?.length || 0);
+  const { email, firstname, lastname, password } = req.body;
   
   // Get eligible results from session (set during search)
   const searchData = req.session.searchData || {};
   const eligibleResults = searchData.eligibleResults || [];
-
-
-  // More logging
-  console.log('Eligible results to save:', JSON.stringify(eligibleResults));
   
   try {
     // Register user and save targets
@@ -50,10 +41,8 @@ const handleRegistration = async (req, res, next) => {
     // Clear search data from session
     delete req.session.searchData;
     
-    // Set success message
     req.session.successMessage = 'Registration successful! You can now sign in.';
     
-    // Redirect to sign in page
     res.redirect('/users/signin');
   } catch (error) {
     console.error('Registration error:', error);
@@ -61,7 +50,50 @@ const handleRegistration = async (req, res, next) => {
   }
 };
 
+const renderSignInForm = (req, res) => {
+  res.render('signin', {
+    title: 'Sign In',
+    successMessage: req.session.successMessage
+  });
+  delete req.session.successMessage;
+};
+
+const handleSignIn = async (req, res, next) => {
+  const { email, password } = req.body;
+  
+  try {
+    const client = await clientModel.authenticate(email, password);
+    
+    if (!client) {
+      return res.render('signin', {
+        title: 'Sign In',
+        errorMessages: ['Invalid email or password'],
+        email
+      });
+    }
+    
+    req.session.user = {
+      id: client.id,
+      email: client.email,
+      firstname: client.first_name,
+      lastname: client.last_name,
+      isAdmin: client.isAdmin
+    };
+    
+    const redirectTo = '/dashboard';
+    delete req.session.returnTo;
+    
+    res.redirect(redirectTo);
+  } catch (error) {
+    console.error('Sign-in error:', error);
+    next(error);
+  }
+};
+
+
 module.exports = {
   renderRegistrationForm,
-  handleRegistration
+  handleRegistration,
+  renderSignInForm,
+  handleSignIn
 };
