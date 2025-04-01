@@ -60,7 +60,6 @@ const getAllAddresses = async () => {
 };
 
 const findTargetsByEmail = async (owner_email) => {
-  console.log('findTargetsByEmailCalled');
   try { 
     const targets = await db.query(
       'SELECT * FROM targets WHERE LOWER(owner_email) = LOWER($1) ORDER BY name ASC',

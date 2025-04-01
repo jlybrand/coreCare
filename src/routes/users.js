@@ -12,4 +12,16 @@ router.post(
   userController.handleSignIn
 );
 
+router.get('/signout', (req, res) => {
+  // Clear the user from session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    }
+    // Redirect to home page or sign-in page
+    res.redirect('/');
+  });
+});
+
+
 module.exports = router;
