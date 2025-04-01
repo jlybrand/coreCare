@@ -50,10 +50,6 @@ app.get('/users', (req, res) => {
   res.render('register', { title: 'Register -Care Connect' });
 });
 
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard', { title: 'Care Connect Dashboard' });
-});
-
 // Mount the routes
 app.use('/search', searchRouter);
 app.use('/users', usersRouter);

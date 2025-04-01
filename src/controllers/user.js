@@ -60,8 +60,7 @@ const renderSignInForm = (req, res) => {
 };
 
 const handleSignIn = async (req, res, next) => {
-  const email = req.body.email.toLowerCase(); 
-  const { password } = req.body;
+  const { email, password } = req.body;
   
   try {
     const client = await clientModel.authenticate(email, password);

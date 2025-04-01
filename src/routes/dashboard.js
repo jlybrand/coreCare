@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const userService = require('../services/user'); 
+const targetModel = require('../models/target')
 
-// Dashboard route
 router.get('/', async (req, res, next) => {
   // Check if user is authenticated
   if (!req.session.user) {
@@ -10,8 +9,7 @@ router.get('/', async (req, res, next) => {
   }
   
   try {
-    // Get user's targets
-    const result = await userService.getUserTargets(req.session.user.username);
+    const result = await targetModel.findTargetsByEmail(req.session.user.email);
     
     if (!result.success) {
       req.flash('error', result.error || 'Failed to load targets');
