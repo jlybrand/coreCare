@@ -13,14 +13,12 @@ html
           a(href='/search') Search
         if user
           li
-            a(href='/users/dashboard') Dashboard
+            a(href='/dashboard') Dashboard
           li
             a(href='/users/signout') Sign Out
         else
           li
-            a(href='/users/signin') Sign In
-          li
-            a(href='/users/register') Register
+           a(href='/users/signin') Sign In
     main
       if errorMessages && errorMessages.length > 0
         .error-messages

@@ -19,12 +19,17 @@ app.use(
     secret: config.secret,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
+    cookie: { 
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production'
+    }
   })
 );
 
 // Make session data available to views
 app.use((req, res, next) => {
+  res.locals.user = req.session.user;
   res.locals.successMessage = req.session.successMessage;
   delete req.session.successMessage;
   
@@ -34,6 +39,7 @@ app.use((req, res, next) => {
 // Import routes
 const searchRouter = require('./routes/search');
 const usersRouter = require('./routes/users');
+const dashboardRouter = require('./routes/dashboard')
 
 // Register routes
 app.get('/', (req, res) => {
@@ -44,9 +50,14 @@ app.get('/users', (req, res) => {
   res.render('register', { title: 'Register -Care Connect' });
 });
 
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard', { title: 'Care Connect Dashboard' });
+});
+
 // Mount the routes
 app.use('/search', searchRouter);
-app.use('/users', usersRouter)
+app.use('/users', usersRouter);
+app.use('/dashboard', dashboardRouter); 
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');

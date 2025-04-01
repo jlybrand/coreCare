@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  section.container
+    section.left-column
+    section.center-column
+      h1.page-title Welcome, #{user.firstname}!
+
+      .dashboard-section
+        h2 Your Account
+        p Email: #{user.email}
+        p Name: #{user.firstname} #{user.lastname}
+      
+      .dashboard-section
+        h2 Your Referrals 
+        p Debug: Total targets in database: #{totalTargetCount}
+        p Found #{targets ? targets.length : 0} referrals for your account
+        
+        if targets && targets.length > 0
+          .target-list
+            each target in targets
+              .target-card
+                h3= target.name
+                p= target.address
+                p #{target.city}, #{target.state} #{target.postal_code}
+                if target.phone
+                  p Phone: #{target.phone}
+        else
+          p You don't have any referrals yet.
+          
+        a.action-button(href="/search") Find Referrals
+        
+    section.right-column

@@ -67,9 +67,12 @@ const getAllAddresses = async () => {
  * @returns {Array} - Array of targets
  */
 const findByOwner = async (email) => {
-  try {
-    const query = 'SELECT * FROM targets WHERE owner_email = $1';
+  try { 
+    const query = 'SELECT * FROM targets WHERE LOWER(owner_email) = LOWER($1)';
     const result = await db.query(query, email);
+    
+    console.log(`Query returned ${result.rows.length} targets`);
+    
     return result.rows;
   } catch (error) {
     console.error('Error finding targets by owner:', error);
@@ -104,7 +107,7 @@ const findAll = async () => {
     const query = `
       SELECT t.*, c.first_name, c.last_name, c.email 
       FROM targets t
-      JOIN clients c ON t.owner = c.email
+      JOIN clients c ON t.owner_email = c.email
       ORDER BY t.id DESC
     `;
     const result = await db.query(query);

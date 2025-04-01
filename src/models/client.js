@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
  */
 const exists = async (email) => {
   try {
-    const query = 'SELECT 1 FROM clients WHERE email = $1';
+    const query = 'SELECT 1 FROM clients WHERE LOWER(email) = LOWER($1)';
     const result = await db.query(query, email);
     return result.rowCount > 0;
   } catch (error) {
@@ -15,15 +15,9 @@ const exists = async (email) => {
   }
 };
 
-/**
- * Find a client by email
- * 
- * @param {string} email - The email to search for
- * @returns {Object|null} - The client or null if not found
- */
-const findByEmail = async (email) => {
+const findClientByEmail = async (email) => {
   try {
-    const query = 'SELECT * FROM clients WHERE email = $1';
+    const query = 'SELECT * FROM clients WHERE LOWER(email) = LOWER($1)';
     const result = await db.query(query, email);
     return result.rows[0]; // Return the client or undefined
   } catch (error) {
@@ -42,7 +36,7 @@ const findByEmail = async (email) => {
 const authenticate = async (email, password) => {
   try {
     // Find the client by email
-    const client = await findByEmail(email);
+    const client = await findClientByEmail(email);
     
     if (!client) {
       return null; // Client not found
@@ -69,14 +63,12 @@ const authenticate = async (email, password) => {
  */
 const create = async (clientInfo) => {
   try {
-    // Check if client already exists
     const clientExists = await exists(clientInfo.email);
     
     if (clientExists) {
-      return false; // Client already exists
+      return false; 
     }
     
-    // Hash the password
     const hashedPassword = await bcrypt.hash(clientInfo.password, 10);
     
     const query = `
@@ -124,7 +116,7 @@ const findAll = async () => {
 
 module.exports = {
   exists,
-  findByEmail,
+  findClientByEmail,
   authenticate,
   create,
   findAll

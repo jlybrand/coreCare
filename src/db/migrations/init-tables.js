@@ -27,7 +27,7 @@ const initTables = async () => {
         id SERIAL PRIMARY KEY,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE CHECK (email = LOWER(email)),
         password TEXT NOT NULL,
         date_created DATE DEFAULT CURRENT_DATE,
         isAdmin BOOLEAN NOT NULL DEFAULT FALSE
@@ -44,7 +44,7 @@ const initTables = async () => {
         state TEXT NOT NULL,
         postal_code TEXT NOT NULL,
         phone TEXT,
-        owner_email TEXT NOT NULL REFERENCES clients (email) ON DELETE CASCADE
+        owner_email TEXT NOT NULL CHECK (owner_email = LOWER(owner_email)) REFERENCES clients (email) ON DELETE CASCADE
       )
     `);
     

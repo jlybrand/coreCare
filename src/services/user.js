@@ -1,6 +1,7 @@
 const clientModel = require('../models/client');
 const targetModel = require('../models/target');
 const utils = require('../utils');
+const db = require('../db');
 
  
 const registerUser = async (userData, targets) => {
@@ -58,6 +59,28 @@ const registerUser = async (userData, targets) => {
   }
 };
 
+const getUserTargets = async (username) => {
+  try {
+    // Adjust the query based on your database schema
+    const targets = await db.query(
+      'SELECT * FROM targets WHERE username = $1 ORDER BY created_at DESC',
+      [username]
+    );
+    
+    return {
+      success: true,
+      targets: targets.rows
+    };
+  } catch (error) {
+    console.error('Error fetching user targets:', error);
+    return {
+      success: false,
+      error: 'Failed to retrieve targets'
+    };
+  }
+};
+
 module.exports = {
-  registerUser
+  registerUser,
+  getUserTargets
 };
