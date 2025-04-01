@@ -13,8 +13,7 @@ const renderRegistrationForm = (req, res) => {
 };
 
 const handleRegistration = async (req, res, next) => {
-  const { firstname, lastname, password } = req.body;
-  const email = req.body.email.toLowerCase();
+  const { email, firstname, lastname, password } = req.body;
   
   // Get eligible results from session (set during search)
   const searchData = req.session.searchData || {};
