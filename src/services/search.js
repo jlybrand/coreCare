@@ -15,25 +15,36 @@ const findProspect = (origin, results) => {
   return prospect || null;
 };
 
-// Filter eligible results by removing the prospect and already claimed targets
- const filterEligibleResults = (results, prospect, claimedAddresses) => {
+const filterEligibleResults = (results, prospect, claimedAddresses) => {
   if (!results || !Array.isArray(results) || results.length === 0) {
+    console.log("No results to filter");
     return [];
   }
-
+  
+  // Ensure claimedAddresses is an array
   const addresses = Array.isArray(claimedAddresses) ? claimedAddresses : [];
-
-  return results.filter((result) => {
+  
+  if (addresses.length > 0) {
+    console.log('Sample claimed address:', addresses[0]);
+    console.log('Sample result address:', results[0].address);
+  }
+  
+  const filteredResults = results.filter(result => {
+    // Filter out prospect
     if (prospect && result.address === prospect.address) {
       return false;
     }
-
-    if (addresses.includes(result.address)) {
+    
+    // Filter out claimed addresses
+    if (addresses.length > 0 && addresses.includes(result.address)) {
       return false;
     }
-
+    
     return true;
   });
+  
+  console.log(`Filtered to ${filteredResults.length} results`);
+  return filteredResults;
 };
 
 const performSearch = async ({ address, zipcode, radius, sicCode }) => {
@@ -64,7 +75,7 @@ const performSearch = async ({ address, zipcode, radius, sicCode }) => {
     const prospect = findProspect(origin, searchResults);
 
     // Get all claimed addresses from the database
-    const claimedAddresses = targetModel.getAllAddresses();
+    let claimedAddresses = await targetModel.getAllAddresses();
     console.log(
       `Found ${claimedAddresses.length} already claimed addresses in database`
     );
@@ -89,7 +100,7 @@ const performSearch = async ({ address, zipcode, radius, sicCode }) => {
       eligibleResults: eligibleResults, 
       prospect: prospect
     };
-    console.log("Result Object: ", eligibleResults.slice(0, 4));
+    // console.log("Result Object: ", eligibleResults.slice(0, 4));
     return result;
   } catch (error) {
     console.error("Search service error:", error);
