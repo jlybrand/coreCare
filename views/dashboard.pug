@@ -1,32 +1,97 @@
 extends layout
 
 block content
-  section.container
-    section.left-column
-    section.center-column
-      h1.page-title Welcome, #{user.firstname}!
-
-      .dashboard-section
-        h2 Your Account
-        p Email: #{user.email}
-        p Name: #{user.firstname} #{user.lastname}
+  .dashboard-container
+    // Sidebar
+    .dashboard-sidebar
+      .user-profile
+        .avatar
+          span.avatar-placeholder #{user.firstname[0]}#{user.lastname[0]}
+        .user-info
+          h3 #{user.firstname} #{user.lastname}
+          p.user-email #{user.email}
       
-      .dashboard-section
-        h2 Your Referrals 
-        p Found #{targets ? targets.length : 0} referrals for your account
+      .sidebar-nav
+        a.nav-item.active(href="/dashboard")
+          i.icon-chart-line
+          span Dashboard
+        a.nav-item(href="/dashboard/list")
+          i.icon-business
+          span My Referrals
+        a.nav-item(href="/search")
+          i.icon-search
+          span Find More
+        a.nav-item(href="/users/profile")
+          i.icon-user
+          span Profile
+      
+      .sidebar-footer
+        a.sign-out(href="/users/signout")
+          i.icon-sign-out
+          span Sign Out
+    
+    // Main Content
+    .dashboard-main
+      .dashboard-header
+        h1.page-title Dashboard
+      
+      // Stats Overview
+      .stats-overview
+        .stat-card
+          h3 Total Referrals
+          .stat-value #{targets.length}
+        
+        .stat-card
+          h3 Categories
+          .stat-value #{categoriesCount || 1}
+          .stat-label Business types
+        // TODO replace with last login date
+        .stat-card
+          h3 Last Activity
+          .stat-value #{lastActivity || 'March 15, 2025'} 
+          .stat-label
+      
+      // Recent Referrals
+      .referrals-section
+        .section-header
+          h2 Recent Referrals
+          a.view-all(href="/dashboard/list") View All
         
         if targets && targets.length > 0
-          .target-list
-            each target in targets
-              .target-card
+          .referrals-grid
+            each target in targets.slice(0, 6)
+              .referral-card
                 h3= target.name
-                p= target.address
-                p #{target.city}, #{target.state} #{target.postal_code}
+                p.address= target.address
+                p.location #{target.city}, #{target.state} #{target.postal_code}
                 if target.phone
-                  p Phone: #{target.phone}
+                  p.phone= target.phone
+                .card-footer
+                  a.action-link(href=`/dashboard/referral/${target.id}`) View Details
         else
-          p You don't have any referrals yet.
-          
-        a.action-button(href="/search") Find Referrals
+          .empty-state
+            p.empty-message You don't have any referrals yet.
+            a.button.primary-button(href="/search") Find Referrals
+      
+      // Map View
+      .map-section
+        .section-header
+          h2 Referrals Map
         
-    section.right-column
+        #targets-map.map-container
+        
+        if targets && targets.length === 0
+          .map-empty-state
+            p.empty-message No referrals to display on the map.
+        
+    // Right Sidebar (optional)
+    .dashboard-aside
+      .help-card
+        h3 Need Help?
+        p Have questions about how to make the most of your referrals?
+        a.help-link(href="/help") View Help Guide
+      
+      .upgrade-card
+        h3 Find More Referrals
+        p Don't miss out on new referral business
+        a.upgrade-button(href="/search") Search
