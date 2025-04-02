@@ -12,6 +12,7 @@ const renderRegistrationForm = (req, res) => {
   });
 };
 
+// TODO associate business name in db 
 const handleRegistration = async (req, res, next) => {
   const { email, firstname, lastname, password } = req.body;
   
