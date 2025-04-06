@@ -164,7 +164,8 @@ const sendClientWelcome = async (client) => {
     If you have any questions, please don't hesitate to contact us.
     
     Best regards,
-    The Team
+
+    The CareConnectTeam
   `;
   
   const html = `
