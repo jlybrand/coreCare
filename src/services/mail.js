@@ -37,7 +37,6 @@ const createTransporter = async () => {
       throw error;
     }
   } 
-  // For production - use SendGrid
   else {
     return { type: 'sendgrid' };
   }
@@ -84,7 +83,6 @@ const sendEmail = async (options) => {
   }
 };
 
-// Prospect notification to admin
 const sendProspectNotification = async (prospect) => {
   const subject = 'New Prospect Added';
   const text = `
@@ -118,7 +116,6 @@ const sendProspectNotification = async (prospect) => {
   });
 };
 
-// New client notification to admin
 const sendNewClientNotification = async (client) => {
   const subject = 'New Client Registration';
   const text = `
@@ -148,9 +145,8 @@ const sendNewClientNotification = async (client) => {
   });
 };
 
-// Welcome email to client
 const sendClientWelcome = async (client) => {
-  const subject = 'Welcome to Our Service';
+  const subject = 'Welcome to CareConnect';
   const text = `
     Hello ${client.firstname},
     
@@ -169,7 +165,7 @@ const sendClientWelcome = async (client) => {
   `;
   
   const html = `
-    <h2>Welcome to Our Service</h2>
+    <h2>Welcome to CareConnect</h2>
     <p>Hello ${client.firstname},</p>
     <p>Thank you for registering with our service. Your account has been created successfully.</p>
     <h3>Your account information:</h3>
@@ -187,7 +183,6 @@ const sendClientWelcome = async (client) => {
   });
 };
 
-// Error notification to admin
 const sendErrorNotification = async (subject, errorDetails) => {
   const text = `
     An error occurred in the application:
