@@ -36,6 +36,23 @@ const saveMany = async (email, targets) => {
     return lastResult && lastResult.rowCount > 0;
   } catch (error) {
     console.error('Error saving targets:', error);
+    try {
+      const errorDetails = `
+        Failed to save targets for client: ${userData.email}
+        
+        Error: ${error.message}
+        Stack: ${error.stack}
+        
+        Number of targets that failed to save: ${targets.length}
+      `;
+      
+      await mailService.sendErrorNotification(
+        "Error Saving Client Targets",
+        errorDetails
+      );
+    } catch (emailError) {
+      console.error("Failed to send error notification email:", emailError);
+    }
     throw error;
   }
 };

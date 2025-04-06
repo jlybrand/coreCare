@@ -1,5 +1,6 @@
 const searchService = require("../services/search");
 const prospectModel = require('../models/prospect');
+const mailService = require('../services/mail');
 
 const renderSearchForm = (req, res) => {
   res.render("search", {
@@ -39,12 +40,22 @@ const handleSearchSubmit = async (req, res) => {
     }
 
     // If we found a prospect, save it to the database
+    let prospectSaved;
     if (searchResult.prospect) {
       try {
-        await prospectModel.create(searchResult.prospect);
+        prospectSaved = await prospectModel.create(searchResult.prospect);
         console.log("Prospect saved to database");
       } catch (error) {
         console.error("Error saving prospect:", error);
+      }
+    }
+
+    if (prospectSaved) {
+      try {
+        await mailService.sendProspectNotification(searchResult.prospect);
+        console.log("Prospect notification email sent to admin");
+      } catch (emailError) {
+        console.error("Failed to send prospect notification email:", emailError);
       }
     }
 

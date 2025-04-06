@@ -26,7 +26,7 @@ const handleRegistration = async (req, res, next) => {
       { firstname, lastname, email, password },
       eligibleResults
     );
-    
+
     if (!result.success) {
       return res.render('register', {
         title: 'Registration Error',
