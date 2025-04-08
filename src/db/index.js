@@ -21,12 +21,11 @@ const query = async (statement, ...parameters) => {
   const start = Date.now();
   
   try {
-    console.log('Executing query:', statement, parameters);
+    // console.log('Executing query:', statement, parameters);
     
     const result = await pool.query(statement, parameters);
-    
     const duration = Date.now() - start;
-    console.log(`Query completed in ${duration}ms, rows: ${result.rowCount}`);
+    // console.log(`Query completed in ${duration}ms, rows: ${result.rowCount}`);
     
     return result;
   } catch (error) {

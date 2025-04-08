@@ -82,7 +82,6 @@ nav > ul > li > a:hover {
   margin-bottom: 4px;
 }
 
-
 .container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -163,6 +162,11 @@ button.submit-bttn {
   transition: background-color 0.3s ease;
 }
 
+.reset-link {
+  align-self: flex-end;
+  padding-top: 1em;
+  border: none;
+}
 
 .modal-overlay {
   position: fixed;
@@ -185,7 +189,7 @@ button.submit-bttn {
   max-width: 600px;
   max-height: 150vh;
   overflow-y: auto;
-  animation: modalAppear 1s       
+  animation: modalAppear 1s;
 }
 
 .modal-success {
@@ -271,12 +275,11 @@ button.submit-bttn {
   box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
 }
 
-
 @keyframes modalAppear {
   0% {
     opacity: 0;
   }
-  25%{
+  25% {
     opacity: 0.3;
   }
   50% {
@@ -290,9 +293,7 @@ button.submit-bttn {
   }
 }
 
-
 /* Dashboard Styles */
-
 
 /* Dashboard Layout */
 .dashboard-container {
@@ -311,7 +312,7 @@ button.submit-bttn {
   grid-area: sidebar;
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -442,14 +443,14 @@ button.submit-bttn {
 .stat-card {
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .stat-card h3 {
@@ -466,7 +467,8 @@ button.submit-bttn {
   margin-bottom: 0.5rem;
 }
 
-.stat-change, .stat-label {
+.stat-change,
+.stat-label {
   font-size: 0.85rem;
   color: #666;
 }
@@ -476,10 +478,11 @@ button.submit-bttn {
 }
 
 /* Section Styling */
-.referrals-section, .map-section {
+.referrals-section,
+.map-section {
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
 }
 
@@ -518,7 +521,7 @@ button.submit-bttn {
 
 .referral-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .referral-card h3 {
@@ -527,7 +530,9 @@ button.submit-bttn {
   font-weight: 600;
 }
 
-.address, .location, .phone {
+.address,
+.location,
+.phone {
   margin: 0.25rem 0;
   font-size: 0.9rem;
   color: #666;
@@ -578,20 +583,23 @@ button.submit-bttn {
   top: 1rem;
 }
 
-.help-card, .upgrade-card {
+.help-card,
+.upgrade-card {
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
 }
 
-.help-card h3, .upgrade-card h3 {
+.help-card h3,
+.upgrade-card h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.help-link, .upgrade-button {
+.help-link,
+.upgrade-button {
   display: inline-block;
   margin-top: 1rem;
   text-decoration: none;
@@ -614,11 +622,11 @@ button.submit-bttn {
 @media (max-width: 1200px) {
   .dashboard-container {
     grid-template-columns: 200px 1fr;
-    grid-template-areas: 
+    grid-template-areas:
       "sidebar main"
       "sidebar main";
   }
-  
+
   .dashboard-aside {
     display: none;
   }
@@ -627,15 +635,15 @@ button.submit-bttn {
 @media (max-width: 768px) {
   .dashboard-container {
     grid-template-columns: 1fr;
-    grid-template-areas: 
+    grid-template-areas:
       "main"
       "main";
   }
-  
+
   .dashboard-sidebar {
     display: none;
   }
-  
+
   .stats-overview {
     grid-template-columns: 1fr;
   }
@@ -648,7 +656,7 @@ button.submit-bttn {
   height: 400px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 .map-empty-state {
@@ -661,7 +669,7 @@ button.submit-bttn {
 /* Leaflet popup customization */
 .leaflet-popup-content-wrapper {
   border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .leaflet-popup-content {

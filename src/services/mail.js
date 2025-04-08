@@ -183,6 +183,58 @@ const sendClientWelcome = async (client) => {
   });
 };
 
+const sendPasswordResetEmail = async (client, token) => {
+  if (!token) {
+    console.error('Token is undefined in sendPasswordResetEmail');
+    throw new Error('Reset token is required');
+  }
+  
+  const appUrl = config.appUrl;
+  console.log('Using appUrl:', appUrl);
+  
+  const resetUrl = `${appUrl}/users/reset-password?token=${token}`;
+  console.log('Generated reset URL:', resetUrl);
+  
+  const subject = 'Password Reset Request';
+  const text = `
+    Hello ${client.firstname},
+    
+    You requested a password reset for your account.
+    
+    Please click on the following link to set a new password:
+    ${resetUrl}
+    
+    This link will expire in 1 hour.
+    
+    If you didn't request this password reset, please ignore this email.
+    
+    Thank you,
+    The CareConnect Team
+  `;
+  
+  const html = `
+    <h2>Password Reset Request</h2>
+    <p>Hello ${client.firstname},</p>
+    <p>You requested a password reset for your account.</p>
+    <p>Please click the button below to set a new password:</p>
+    <p style="text-align: center; margin: 25px 0;">
+      <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Password</a>
+    </p>
+    <p>Or copy and paste this link in your browser:</p>
+    <p><a href="${resetUrl}">${resetUrl}</a></p>
+    <p>This link will expire in 1 hour.</p>
+    <p>If you didn't request this password reset, please ignore this email.</p>
+    <p>Thank you,<br>The CareConnect Team</p>
+  `;
+  
+  return sendEmail({
+    to: client.email,
+    subject,
+    text,
+    html
+  });
+};
+
 const sendErrorNotification = async (subject, errorDetails) => {
   const text = `
     An error occurred in the application:
@@ -228,6 +280,7 @@ module.exports = {
   sendProspectNotification,
   sendNewClientNotification,
   sendClientWelcome,
+  sendPasswordResetEmail,
   sendErrorNotification,
   testEmailConfig
 };

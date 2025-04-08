@@ -3,6 +3,15 @@ const path = require('path');
 const config = require('../config');
 const session = require('express-session');
 const LokiStore = require('connect-loki')(session);
+const passwordResetModel = require('./models/passwordReset');
+
+const cleanupInterval = 60 * 60 * 1000; // 1 hour
+const scheduleTokenCleanup = () => {
+  passwordResetModel.cleanupExpiredTokens();
+  setInterval(() => {
+    passwordResetModel.cleanupExpiredTokens();
+  }, cleanupInterval);
+};
 
 const app = express();
 
@@ -39,7 +48,7 @@ app.use((req, res, next) => {
 // Import routes
 const searchRouter = require('./routes/search');
 const usersRouter = require('./routes/users');
-const dashboardRouter = require('./routes/dashboard')
+const dashboardRouter = require('./routes/dashboard');
 
 // Register routes
 app.get('/', (req, res) => {
@@ -70,5 +79,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error', { title: 'Error' });
 });
+
+scheduleTokenCleanup();
 
 module.exports = app;
