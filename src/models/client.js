@@ -114,10 +114,37 @@ const findAll = async () => {
   }
 };
 
+/**
+ * Update client password by ID
+ * 
+ * @param {number} clientId - The client ID
+ * @param {string} newPassword - The new plain text password
+ * @returns {boolean} - True if successful
+ */
+const updatePassword = async (clientId, newPassword) => {
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    const query = `
+      UPDATE clients
+      SET password = $1
+      WHERE id = $2
+      RETURNING id
+    `;
+    
+    const result = await db.query(query, [hashedPassword, clientId]);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Error updating client password:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   exists,
   findClientByEmail,
   authenticate,
   create,
-  findAll
+  findAll,
+  updatePassword
 };

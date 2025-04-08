@@ -1,12 +1,12 @@
-const db = require('../index');
+const db = require("../index");
 
 /**
  * Initialize database tables
  */
 const initTables = async () => {
   try {
-    console.log('Initializing database tables...');
-    
+    console.log("Initializing database tables...");
+
     // Create prospects table
     await db.query(`
       CREATE TABLE IF NOT EXISTS prospects (
@@ -20,7 +20,7 @@ const initTables = async () => {
         date_created DATE DEFAULT CURRENT_DATE
       )
     `);
-    
+
     // Create clients table without username
     await db.query(`
       CREATE TABLE IF NOT EXISTS clients (
@@ -33,7 +33,7 @@ const initTables = async () => {
         isAdmin BOOLEAN NOT NULL DEFAULT FALSE
       )
     `);
-    
+
     // Create targets table with owner_email
     await db.query(`
       CREATE TABLE IF NOT EXISTS targets (
@@ -47,10 +47,20 @@ const initTables = async () => {
         owner_email TEXT NOT NULL CHECK (owner_email = LOWER(owner_email)) REFERENCES clients (email) ON DELETE CASCADE
       )
     `);
-    
-    console.log('Database tables initialized successfully');
+
+    await db.query(` CREATE TABLE IF NOT EXISTS password_resets (
+        id SERIAL PRIMARY KEY,
+        client_id INTEGER NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+        token VARCHAR(255) NOT NULL UNIQUE,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        used BOOLEAN DEFAULT FALSE
+      )
+    `);
+
+    console.log("Database tables initialized successfully");
   } catch (error) {
-    console.error('Error initializing database tables:', error);
+    console.error("Error initializing database tables:", error);
     throw error;
   }
 };

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  section.container
+    section.left-column
+    section.center-column
+      h1.page-title= title
+      if success
+        div.alert.alert-success= success
+      else if error
+        div.alert.alert-danger= error
+      else  
+        p Enter your email address below to receive password reset instructions.
+      
+      form(action="/users/request-reset", method="POST")
+        div.form-group
+          label(for="email") Email Address
+          input.form-control(type="email", id="email", name="email", required)
+        
+        div.form-group
+          button.btn.btn-primary(type="submit") Request Reset Link
+        
+        div.form-group
+          p
+            a(href="/signin") Back to Login

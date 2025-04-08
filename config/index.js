@@ -5,6 +5,7 @@ const config = {
   nodeEnv: process.env.NODE_ENV,
   databaseUrl: process.env.DATABASE_URL,
   secret: process.env.SECRET,
+  appUrl: process.env.APP_URL || 'http://localhost:3000',
 
   mapquest: {
     apiUrl: process.env.API_URL,
