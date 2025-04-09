@@ -51,7 +51,7 @@ const initTables = async () => {
     await db.query(` CREATE TABLE IF NOT EXISTS password_resets (
         id SERIAL PRIMARY KEY,
         client_id INTEGER NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
-        token VARCHAR(255) NOT NULL UNIQUE,
+        token TEXT NOT NULL UNIQUE,
         expires_at TIMESTAMP NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         used BOOLEAN DEFAULT FALSE
